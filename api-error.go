@@ -19,7 +19,7 @@ type ApiErrorOptions struct {
 	Original error
 }
 
-func NewApiError(opts *ApiErrorOptions) *ApiError {
+func NewApiError(opts *ApiErrorOptions) error {
 	e := &ApiError{
 		code:     opts.Code,
 		message:  opts.Message,
