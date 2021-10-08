@@ -56,13 +56,14 @@ func (p *HttpRequester) makeRequest(method string, route string, body []byte, re
 	options := p.getReqOptions(reqOptions)
 	path := p.getReqPath(route, options)
 
-	var reader *bytes.Reader
+	var r *http.Request
+	var err error
 
 	if body != nil {
-		reader = bytes.NewReader(body)
+		r, err = http.NewRequest(method, path, bytes.NewReader(body))
+	} else {
+		r, err = http.NewRequest(method, path, nil)
 	}
-
-	r, err := http.NewRequest(method, path, reader)
 	if err != nil {
 		return nil, nil, NewApiError(&ApiErrorOptions{
 			Code:     "REQUEST",
