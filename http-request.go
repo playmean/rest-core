@@ -115,7 +115,7 @@ func (p *HttpRequester) doRequest(r *http.Request) (*http.Response, []byte, erro
 
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, nil, NewApiError(&ApiErrorOptions{
+		return resp, nil, NewApiError(&ApiErrorOptions{
 			Code:     "REQUEST",
 			Message:  "error while reading response body",
 			Original: err,
@@ -123,7 +123,7 @@ func (p *HttpRequester) doRequest(r *http.Request) (*http.Response, []byte, erro
 	}
 
 	if resp.StatusCode != 200 {
-		return nil, nil, NewApiError(&ApiErrorOptions{
+		return resp, respBody, NewApiError(&ApiErrorOptions{
 			Code:    "REQUEST",
 			Message: string(respBody),
 		})
