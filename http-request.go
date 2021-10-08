@@ -80,7 +80,7 @@ func (p *HttpRequester) getReqOptions(reqOptions []*HttpRequesterOptions) *HttpR
 		return reqOptions[0]
 	}
 
-	return nil
+	return new(HttpRequesterOptions)
 }
 
 func (p *HttpRequester) getReqPath(route string, options *HttpRequesterOptions) string {
