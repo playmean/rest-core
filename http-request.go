@@ -40,19 +40,19 @@ func (p *HttpRequester) Get(route string, reqOptions ...*HttpRequesterOptions) (
 	return p.makeRequest("GET", route, nil, reqOptions)
 }
 
-func (p *HttpRequester) Post(route string, body []byte, reqOptions ...*HttpRequesterOptions) (*http.Response, []byte, error) {
+func (p *HttpRequester) Post(route string, body interface{}, reqOptions ...*HttpRequesterOptions) (*http.Response, []byte, error) {
 	return p.makeRequest("POST", route, body, reqOptions)
 }
 
-func (p *HttpRequester) Put(route string, body []byte, reqOptions ...*HttpRequesterOptions) (*http.Response, []byte, error) {
+func (p *HttpRequester) Put(route string, body interface{}, reqOptions ...*HttpRequesterOptions) (*http.Response, []byte, error) {
 	return p.makeRequest("PUT", route, body, reqOptions)
 }
 
-func (p *HttpRequester) Delete(route string, body []byte, reqOptions ...*HttpRequesterOptions) (*http.Response, []byte, error) {
+func (p *HttpRequester) Delete(route string, body interface{}, reqOptions ...*HttpRequesterOptions) (*http.Response, []byte, error) {
 	return p.makeRequest("DELETE", route, body, reqOptions)
 }
 
-func (p *HttpRequester) makeRequest(method string, route string, body []byte, reqOptions []*HttpRequesterOptions) (*http.Response, []byte, error) {
+func (p *HttpRequester) makeRequest(method string, route string, body interface{}, reqOptions []*HttpRequesterOptions) (*http.Response, []byte, error) {
 	options := p.getReqOptions(reqOptions)
 	path := p.getReqPath(route, options)
 
@@ -60,7 +60,18 @@ func (p *HttpRequester) makeRequest(method string, route string, body []byte, re
 	var err error
 
 	if body != nil {
-		r, err = http.NewRequest(method, path, bytes.NewReader(body))
+		if bytesBody, ok := body.([]byte); ok {
+			r, err = http.NewRequest(method, path, bytes.NewReader(bytesBody))
+		} else {
+			var bytesJson []byte
+
+			bytesJson, err = EncodeJson(body)
+			if err != nil {
+				return nil, nil, err
+			}
+
+			r, err = http.NewRequest(method, path, bytes.NewReader(bytesJson))
+		}
 	} else {
 		r, err = http.NewRequest(method, path, nil)
 	}
