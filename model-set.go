@@ -18,6 +18,16 @@ func NewModelSet(input interface{}) *ModelSet {
 	return m
 }
 
+func (m *ModelSet) HasDbName(name string) bool {
+	for _, dbName := range m.fieldNames {
+		if dbName == name {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (m *ModelSet) GetNames() ([]string, []string) {
 	names := make([]string, 0, len(m.fieldNames))
 	dbNames := make([]string, 0, len(m.fieldNames))

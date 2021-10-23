@@ -90,8 +90,10 @@ func (m *Model) ModelCreate() error {
 
 	dbNames, values := m.getValues()
 
-	dbNames = append(dbNames, "id")
-	values = append(values, uuid.Must(uuid.NewV4()).String())
+	if m.set.HasDbName("id") {
+		dbNames = append(dbNames, "id")
+		values = append(values, uuid.Must(uuid.NewV4()).String())
+	}
 
 	placeholders := strings.Repeat("?, ", len(dbNames)-1) + "?"
 
