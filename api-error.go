@@ -35,7 +35,13 @@ func NewApiError(opts *ApiErrorOptions) error {
 }
 
 func (e *ApiError) Error() string {
-	return fmt.Sprintf("[error] %s - %s", e.code, e.message)
+	var orig = ""
+
+	if e.original != nil {
+		orig = fmt.Sprintf(" (%s)", e.original.Error())
+	}
+
+	return fmt.Sprintf("[error] %s - %s%s", e.code, e.message, orig)
 }
 
 func (e *ApiError) Code() string {
