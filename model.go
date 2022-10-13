@@ -2,7 +2,6 @@ package restcore
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 	"time"
 
@@ -157,11 +156,11 @@ func (m *Model) getAssigns() ([]string, []interface{}, string) {
 	assigns := make([]string, 0)
 	values := make([]interface{}, 0)
 
-	var idValue string = ""
+	var idValue = ""
 
 	for dbName, value := range m.set.GetValues() {
 		if dbName == "id" {
-			idValue = value.(reflect.Value).String()
+			idValue = value.(string)
 
 			continue
 		}
