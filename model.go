@@ -90,9 +90,12 @@ func (m *Model) ModelCreate() error {
 
 	dbNames, values := m.getValues()
 
-	if m.set.HasDbName("id") {
+	hasID := m.set.HasDbName("id")
+	id := uuid.Must(uuid.NewV4()).String()
+
+	if hasID {
 		dbNames = append(dbNames, "id")
-		values = append(values, uuid.Must(uuid.NewV4()).String())
+		values = append(values, id)
 	}
 
 	placeholders := strings.Repeat("?, ", len(dbNames)-1) + "?"
@@ -107,6 +110,10 @@ func (m *Model) ModelCreate() error {
 			Message:  "cannot insert row",
 			Original: err,
 		})
+	}
+
+	if hasID {
+		m.set.SetStringValue("id", id)
 	}
 
 	return nil

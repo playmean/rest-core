@@ -58,6 +58,20 @@ func (m *ModelSet) GetValues() map[string]interface{} {
 	return dbValues
 }
 
+func (m *ModelSet) SetStringValue(dbFieldName string, value string) {
+	pointer := reflect.Indirect(reflect.ValueOf(m.original))
+
+	for structName, dbName := range m.fieldNames {
+		field := pointer.FieldByName(structName)
+
+		if dbName == dbFieldName {
+			field.SetString(value)
+
+			return
+		}
+	}
+}
+
 func (m *ModelSet) resolveNames() {
 	el := reflect.TypeOf(m.original).Elem()
 
